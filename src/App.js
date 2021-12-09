@@ -80,6 +80,9 @@ class App extends Component {
 
   render() {
     const { showModal, isDownlImages, currImg, images, findText } = this.state;
+    if (images.length > 0) {
+      console.log(images[currImg]); //imageHeight imageWidth
+    }
 
     return (
       <div className="App">
