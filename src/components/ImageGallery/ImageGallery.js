@@ -4,11 +4,11 @@ import styles from './ImageGallery.module.scss';
 
 import ImageGalleryItem from './ImageGalleryItem';
 
-function ImageGallery({ imageList }) {
+function ImageGallery({ imageList, onClick }) {
   return (
     <ul className={styles.ImageGallery}>
       {imageList.map(item => (
-        <ImageGalleryItem galleryItem={item} />
+        <ImageGalleryItem key={item.id.toString()} galleryItem={item} onClick={onClick} />
       ))}
     </ul>
   );

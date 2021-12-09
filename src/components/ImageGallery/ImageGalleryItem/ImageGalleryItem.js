@@ -2,22 +2,24 @@ import PropTypes from 'prop-types';
 
 import styles from './ImageGalleryItem.module.scss';
 
-function imageGalleryItem({ galleryItem }) {
+function imageGalleryItem({ galleryItem, onClick }) {
   return (
-    <li key={galleryItem.id} className={styles.item}>
+    <li className={styles.ImageGalleryItem}>
       <img
+        id={galleryItem.id}
+        className={styles.ImageGalleryItemImage}
         src={galleryItem.webformatURL}
         alt={galleryItem.tags}
-        data={galleryItem.largeImageURL}
         width={galleryItem.previewWidth}
         height={galleryItem.previewHeight}
+        onClick={onClick}
       />
     </li>
   );
 }
 
 imageGalleryItem.propTypes = {
-  contctsList: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
+  galleryItem: PropTypes.object.isRequired,
 };
 
 export default imageGalleryItem;
