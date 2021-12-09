@@ -11,8 +11,21 @@ class Modal extends Component {
   }
 
   hendleKeyDown = event => {
-    if (event.code === 'Escape') {
-      this.props.onClose({});
+    switch (event.code) {
+      case 'Esc':
+      case 'Escape':
+        this.props.onClose();
+        break;
+      case 'Left':
+      case 'ArrowLeft':
+        this.props.onLeft();
+        break;
+      case 'Right':
+      case 'ArrowRight':
+        this.props.onRight();
+        break;
+      default:
+        break;
     }
   };
 

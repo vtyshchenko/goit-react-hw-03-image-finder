@@ -78,6 +78,34 @@ class App extends Component {
     img.length > 0 && this.toggleModal(img[0]);
   };
 
+  handleRight = () => {
+    const { images, currImg } = this.state;
+    let imgNum = currImg;
+    if (imgNum === images.length - 1) {
+      imgNum = 0;
+    } else {
+      imgNum += 1;
+    }
+
+    this.setState({
+      currImg: imgNum,
+    });
+  };
+
+  handleLeft = () => {
+    const { images, currImg } = this.state;
+    let imgNum = currImg;
+    if (imgNum === 0) {
+      imgNum = images.length - 1;
+    } else {
+      imgNum -= 1;
+    }
+
+    this.setState({
+      currImg: imgNum,
+    });
+  };
+
   render() {
     const { showModal, isDownlImages, currImg, images, findText } = this.state;
     if (images.length > 0) {
@@ -95,7 +123,7 @@ class App extends Component {
         )}
         {isDownlImages && <Button onClick={this.handleGetImages} />}
         {showModal && (
-          <Modal onClose={this.toggleModal}>
+          <Modal onClose={this.toggleModal} onLeft={this.handleLeft} onRight={this.handleRight}>
             <ButtonClose onClick={this.toggleModal} aria-label="Close modal window">
               <IconButtonClose fill="black" />
             </ButtonClose>
