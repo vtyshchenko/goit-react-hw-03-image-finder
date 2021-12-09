@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import styles from './ButtonClose.module.scss';
 
 const ButtonClose = ({ children, onClick, ...anyProp }) => (
-  <button type="button" className="button" onClick={onClick} {...anyProp}>
+  <button type="button" className={styles.button} onClick={onClick} {...anyProp}>
     {children}
   </button>
 );

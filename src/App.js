@@ -16,10 +16,11 @@ import { ReactComponent as IconButtonClose } from './images/icon-close.svg';
 const INITIAL_STATE = {
   isLoading: false,
   images: [],
-  page: 1,
+  page: 0,
   showModal: false,
   isDownlImages: false,
-  currImg: {},
+  currImg: 0,
+  findText: '',
 };
 
 class App extends Component {
@@ -32,7 +33,7 @@ class App extends Component {
     page: PropTypes.number,
     showModal: PropTypes.bool,
     isDownlImages: PropTypes.bool,
-    currImg: PropTypes.object,
+    currImg: PropTypes.number,
   };
 
   reset = () => {
@@ -44,48 +45,58 @@ class App extends Component {
   toggleModal = img => {
     this.setState(({ showModal }) => ({
       showModal: !showModal,
-      currImg: img,
-    }));
-  };
-
-  isisDownlImages = () => {
-    this.setState(({ images }) => ({
-      isDownlImages: images.length > 0,
     }));
   };
 
   handleGetImages = ({ searchText }) => {
-    const data = fetchImages(searchText, this.state.page, 12, null);
-    data.then(response => {
+    if (!searchText) {
+      searchText = this.state.findText;
+    } else {
       this.setState({
-        images: [...this.state.images, ...response],
-        page: 1,
+        images: [],
+        page: 0,
       });
+    }
+    const data = fetchImages(searchText, this.state.page + 1, 12, null);
+    data.then(response => {
+      this.setState(state => ({
+        images: [...state.images, ...response],
+        page: state.page + 1,
+        isDownlImages: response.length > 0,
+        findText: searchText,
+      }));
     });
   };
 
   handleClick = event => {
-    const img = this.state.images.filter(
-      item => item.id === Number(event.target.attributes.id.nodeValue),
-    );
+    const { images } = this.state;
+    const img = images.filter(item => item.id === Number(event.target.attributes.id.nodeValue));
+
+    this.setState({
+      currImg: images.indexOf(img[0]),
+    });
     img.length > 0 && this.toggleModal(img[0]);
   };
 
   render() {
-    const { showModal, isDownlImages, currImg } = this.state;
+    const { showModal, isDownlImages, currImg, images, findText } = this.state;
 
     return (
       <div className="App">
         <Searchbar onSubmit={this.handleGetImages} />
 
-        {isDownlImages && <ImageGallery imageList={this.state.images} onClick={this.handleClick} />}
+        {isDownlImages ? (
+          <ImageGallery imageList={this.state.images} onClick={this.handleClick} />
+        ) : (
+          findText && <p>Images not found</p>
+        )}
         {isDownlImages && <Button onClick={this.handleGetImages} />}
         {showModal && (
           <Modal onClose={this.toggleModal}>
             <ButtonClose onClick={this.toggleModal} aria-label="Close modal window">
               <IconButtonClose fill="black" />
             </ButtonClose>
-            <img src={currImg.largeImageURL} alt={currImg.tags} />
+            <img src={images[currImg].largeImageURL} alt={images[currImg].tags} />
           </Modal>
         )}
       </div>

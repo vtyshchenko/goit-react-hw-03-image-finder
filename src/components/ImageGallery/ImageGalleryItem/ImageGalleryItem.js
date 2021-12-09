@@ -20,6 +20,7 @@ function imageGalleryItem({ galleryItem, onClick }) {
 
 imageGalleryItem.propTypes = {
   galleryItem: PropTypes.object.isRequired,
+  onClick: PropTypes.func,
 };
 
 export default imageGalleryItem;

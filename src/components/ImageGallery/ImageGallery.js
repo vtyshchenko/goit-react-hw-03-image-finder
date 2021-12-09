@@ -16,6 +16,7 @@ function ImageGallery({ imageList, onClick }) {
 
 ImageGallery.propTypes = {
   imageList: PropTypes.arrayOf(PropTypes.object),
+  onClick: PropTypes.func,
 };
 
 export default ImageGallery;
