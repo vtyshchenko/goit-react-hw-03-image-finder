@@ -80,36 +80,28 @@ class App extends Component {
 
   handleRight = () => {
     const { images, currImg } = this.state;
-    let imgNum = currImg;
-    if (imgNum === images.length - 1) {
-      imgNum = 0;
-    } else {
-      imgNum += 1;
-    }
 
     this.setState({
-      currImg: imgNum,
+      currImg: currImg === images.length - 1 ? 0 : currImg + 1,
     });
   };
 
   handleLeft = () => {
     const { images, currImg } = this.state;
-    let imgNum = currImg;
-    if (imgNum === 0) {
-      imgNum = images.length - 1;
-    } else {
-      imgNum -= 1;
-    }
 
     this.setState({
-      currImg: imgNum,
+      currImg: currImg === 0 ? images.length - 1 : currImg - 1,
     });
   };
 
   render() {
     const { showModal, isDownlImages, currImg, images, findText } = this.state;
+    let tags = '';
+    let largeImageURL = '';
     if (images.length > 0) {
-      console.log(images[currImg]); //imageHeight imageWidth
+      // console.log(images[currImg]);
+      largeImageURL = images[currImg].largeImageURL;
+      tags = images[currImg].tags;
     }
 
     return (
@@ -127,7 +119,7 @@ class App extends Component {
             <ButtonClose onClick={this.toggleModal} aria-label="Close modal window">
               <IconButtonClose fill="black" />
             </ButtonClose>
-            <img src={images[currImg].largeImageURL} alt={images[currImg].tags} />
+            <img src={largeImageURL} alt={tags} />
           </Modal>
         )}
       </div>
