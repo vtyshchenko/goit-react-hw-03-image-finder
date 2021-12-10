@@ -50,15 +50,19 @@ class App extends Component {
   };
 
   handleGetImages = ({ searchText }) => {
+    const setPage = searchText ? 0 : this.state.page;
     const findText = searchText ? searchText.toLowerCase().trim() : this.state.findText;
-    this.setState(state => ({
-      status: 'pending',
-      images: state.findText && state.findText !== findText ? [] : state.images,
-      findText: findText,
-      page: searchText ? 0 : this.state.page,
-    }));
+    const setImages =
+      this.state.findText && this.state.findText !== findText ? [] : this.state.images;
 
-    fetchImages(findText, this.state.page + 1, 12, null)
+    this.setState({
+      status: 'pending',
+      images: setImages,
+      findText: findText,
+      page: setPage,
+    });
+
+    fetchImages(findText, this.state.page + 1, 12)
       .then(response => {
         this.setState(state => ({
           images: [...state.images, ...response],
@@ -107,7 +111,7 @@ class App extends Component {
       <div className="App">
         <Searchbar onSubmit={this.handleGetImages} />
 
-        {status === 'rejected' && <p>Error. Images not found for {findText}...</p>}
+        {status === 'rejected' && <p>Error. No images were found for your query: {findText}...</p>}
         {isShow && (
           <>
             <ImageGallery imageList={images} onClick={this.handleClick} />

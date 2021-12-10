@@ -3,7 +3,7 @@ import axios from 'axios';
 const BASE_URL = 'https://pixabay.com/api/?image_type=photo&orientation=horizontal';
 const KEY = '23423301-88813f09fe7b27f5f83c66d56';
 
-async function fetchImages(searchQuery, page, perPage, onError) {
+async function fetchImages(searchQuery, page, perPage) {
   if (searchQuery.length === 0) {
     return Promise.resolve('');
   }
