@@ -9,16 +9,17 @@ async function fetchImages(searchQuery, page, perPage, onError) {
   }
 
   const url = `${BASE_URL}&q=${searchQuery}&page=${page}&per_page=${perPage}&key=${KEY}`;
-  return axios
-    .get(url)
-    .then(response => {
-      if (response.status === 200) {
+  return axios.get(url).then(response => {
+    if (response.status === 200) {
+      if (response.data.hits.length > 0) {
         return response.data.hits;
       } else {
-        return [];
+        throw new Error(`Images for search "${searchQuery}" not found.`);
       }
-    })
-    .catch(onError);
+    } else {
+      throw new Error(`Images for search "${searchQuery}" not found.`);
+    }
+  });
 }
 
 export default fetchImages;

@@ -6,23 +6,21 @@ import './App.css';
 
 import Searchbar from './components/SearchBar';
 import ImageGallery from './components/ImageGallery';
-// import Loader
 import Button from './components/Button';
 import ButtonClose from './components/Modal/ButtonClose';
 import Modal from './components/Modal';
 import fetchImages from './services/apiService';
+import Spinner from './components/Loader';
 
 import { ReactComponent as IconButtonClose } from './images/icon-close.svg';
 
 const INITIAL_STATE = {
-  isLoading: false,
   images: [],
   page: 0,
   showModal: false,
-  isDownlImages: false,
   currImg: 0,
   findText: '',
-  loading: false,
+  status: 'idle',
 };
 
 class App extends Component {
@@ -34,8 +32,9 @@ class App extends Component {
     images: PropTypes.array,
     page: PropTypes.number,
     showModal: PropTypes.bool,
-    isDownlImages: PropTypes.bool,
     currImg: PropTypes.number,
+    findText: PropTypes.string,
+    status: PropTypes.oneOf(['idle', 'pending', 'resolved', 'rejected']),
   };
 
   reset = () => {
@@ -50,31 +49,28 @@ class App extends Component {
     }));
   };
 
-  handleGetImages = searchText => {
-    this.setState({
-      loading: true,
-    });
+  handleGetImages = ({ searchText }) => {
+    const findText = searchText ? searchText.toLowerCase().trim() : this.state.findText;
+    this.setState(state => ({
+      status: 'pending',
+      images: state.findText && state.findText !== findText ? [] : state.images,
+      findText: findText,
+      page: searchText ? 0 : this.state.page,
+    }));
 
-    if (!searchText) {
-      searchText = this.state.findText;
-    } else {
-      this.setState({
-        images: [],
-        page: 0,
-      });
-    }
-
-    const data = fetchImages(searchText, this.state.page + 1, 12, null);
-    data
+    fetchImages(findText, this.state.page + 1, 12, null)
       .then(response => {
         this.setState(state => ({
           images: [...state.images, ...response],
           page: state.page + 1,
-          isDownlImages: response.length > 0,
-          findText: searchText,
+          status: 'resolved',
         }));
       })
-      .finally(() => this.setState({ loading: false }));
+      .catch(() => {
+        this.setState({
+          status: 'rejected',
+        });
+      });
   };
 
   handleClick = event => {
@@ -104,31 +100,26 @@ class App extends Component {
   };
 
   render() {
-    const { showModal, isDownlImages, currImg, images, findText } = this.state;
-    let tags = '';
-    let largeImageURL = '';
-    if (images.length > 0) {
-      // console.log(images[currImg]);
-      largeImageURL = images[currImg].largeImageURL;
-      tags = images[currImg].tags;
-    }
+    const { showModal, currImg, images, findText, status } = this.state;
 
+    const isShow = status === 'resolved' || status === 'pending';
     return (
       <div className="App">
         <Searchbar onSubmit={this.handleGetImages} />
 
-        {isDownlImages ? (
-          <ImageGallery imageList={this.state.images} onClick={this.handleClick} />
-        ) : (
-          findText && <p>Images not found</p>
+        {status === 'rejected' && <p>Error. Images not found for {findText}...</p>}
+        {isShow && (
+          <>
+            <ImageGallery imageList={images} onClick={this.handleClick} />
+            {status === 'pending' ? <Spinner /> : <Button onClick={this.handleGetImages} />}
+          </>
         )}
-        {isDownlImages && <Button onClick={this.handleGetImages} />}
         {showModal && (
           <Modal onClose={this.toggleModal} onLeft={this.handleLeft} onRight={this.handleRight}>
             <ButtonClose onClick={this.toggleModal} aria-label="Close modal window">
               <IconButtonClose fill="black" />
             </ButtonClose>
-            <img src={largeImageURL} alt={tags} />
+            <img src={images[currImg].largeImageURL} alt={images[currImg].tags} />
           </Modal>
         )}
         <ToastContainer autoClose={3000} />

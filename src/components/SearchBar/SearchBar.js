@@ -26,12 +26,13 @@ class SearchBar extends Component {
 
   handleSubmit = event => {
     event.preventDefault();
+    const { searchText } = this.state;
 
     if (this.state.searchText.trim() === '') {
       toast.error('Input search text!');
       return;
     }
-    this.props.onSubmit(this.state.searchText);
+    this.props.onSubmit({ searchText });
     this.reset();
   };
 
