@@ -15,12 +15,12 @@ import Spinner from './components/Loader';
 import { ReactComponent as IconButtonClose } from './images/icon-close.svg';
 
 const INITIAL_STATE = {
-  images: [],
-  page: 0,
-  showModal: false,
-  currImg: 0,
-  findText: '',
   status: 'idle',
+  showModal: false,
+  findText: '',
+  images: [],
+  currImg: 0,
+  page: 0,
 };
 
 class App extends Component {
@@ -29,12 +29,12 @@ class App extends Component {
   };
 
   static propTypes = {
-    images: PropTypes.array,
-    page: PropTypes.number,
-    showModal: PropTypes.bool,
-    currImg: PropTypes.number,
-    findText: PropTypes.string,
     status: PropTypes.oneOf(['idle', 'pending', 'resolved', 'rejected']),
+    showModal: PropTypes.bool,
+    findText: PropTypes.string,
+    images: PropTypes.array,
+    currImg: PropTypes.number,
+    page: PropTypes.number,
   };
 
   reset = () => {
@@ -65,9 +65,9 @@ class App extends Component {
     fetchImages(findText, this.state.page + 1, 12)
       .then(response => {
         this.setState(state => ({
+          status: 'resolved',
           images: [...state.images, ...response],
           page: state.page + 1,
-          status: 'resolved',
         }));
       })
       .catch(() => {
