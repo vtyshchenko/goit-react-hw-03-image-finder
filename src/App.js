@@ -1,5 +1,6 @@
 import { Component } from 'react';
 import PropTypes from 'prop-types';
+import { ToastContainer } from 'react-toastify';
 
 import './App.css';
 
@@ -49,7 +50,7 @@ class App extends Component {
     }));
   };
 
-  handleGetImages = ({ searchText }) => {
+  handleGetImages = searchText => {
     this.setState({
       loading: true,
     });
@@ -130,6 +131,7 @@ class App extends Component {
             <img src={largeImageURL} alt={tags} />
           </Modal>
         )}
+        <ToastContainer autoClose={3000} />
       </div>
     );
   }

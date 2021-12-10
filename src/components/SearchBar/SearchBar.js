@@ -1,6 +1,8 @@
 import PropTypes from 'prop-types';
 import { Component } from 'react';
 
+import { toast } from 'react-toastify';
+
 import styles from './SearchBar.module.scss';
 
 const INITIAL_STATE = {
@@ -25,12 +27,16 @@ class SearchBar extends Component {
   handleSubmit = event => {
     event.preventDefault();
 
-    this.props.onSubmit({ ...this.state });
+    if (this.state.searchText.trim() === '') {
+      toast.error('Input search text!');
+      return;
+    }
+    this.props.onSubmit(this.state.searchText);
     this.reset();
   };
 
   handleChange = event => {
-    this.setState({ searchText: event.target.value });
+    this.setState({ searchText: event.target.value.toLowerCase() });
   };
 
   render() {
