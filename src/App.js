@@ -21,6 +21,7 @@ const INITIAL_STATE = {
   isDownlImages: false,
   currImg: 0,
   findText: '',
+  loading: false,
 };
 
 class App extends Component {
@@ -42,13 +43,17 @@ class App extends Component {
     });
   };
 
-  toggleModal = img => {
+  toggleModal = () => {
     this.setState(({ showModal }) => ({
       showModal: !showModal,
     }));
   };
 
   handleGetImages = ({ searchText }) => {
+    this.setState({
+      loading: true,
+    });
+
     if (!searchText) {
       searchText = this.state.findText;
     } else {
@@ -57,15 +62,18 @@ class App extends Component {
         page: 0,
       });
     }
+
     const data = fetchImages(searchText, this.state.page + 1, 12, null);
-    data.then(response => {
-      this.setState(state => ({
-        images: [...state.images, ...response],
-        page: state.page + 1,
-        isDownlImages: response.length > 0,
-        findText: searchText,
-      }));
-    });
+    data
+      .then(response => {
+        this.setState(state => ({
+          images: [...state.images, ...response],
+          page: state.page + 1,
+          isDownlImages: response.length > 0,
+          findText: searchText,
+        }));
+      })
+      .finally(() => this.setState({ loading: false }));
   };
 
   handleClick = event => {
