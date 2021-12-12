@@ -1,6 +1,7 @@
 import { Component } from 'react';
 import PropTypes from 'prop-types';
 import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import './App.css';
 
@@ -69,6 +70,12 @@ class App extends Component {
           images: [...state.images, ...response],
           page: state.page + 1,
         }));
+        if (this.state.page > 1) {
+          window.scrollBy({
+            top: document.documentElement.clientHeight - 260,
+            behavior: 'smooth',
+          });
+        }
       })
       .catch(() => {
         this.setState({
